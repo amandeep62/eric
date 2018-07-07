@@ -1,0 +1,266 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Access</title>
+    <link href="fonts/font-css.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/CMSStyle.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/http_connection.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.1/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.1/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.js"></script>
+    <style>
+        .table-cell{border:1px solid #ccc;
+            display: table-cell;
+            width: auto;
+            height: auto;
+            padding: 10px 10px 10px 10px;}
+
+        body{
+            overflow: auto;
+        }
+
+        #header, header, footer {
+    width: 100%;
+    text-align: center;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+}
+        #header{
+            text-align: left;
+        }
+        header{
+                top: 56px;
+        }
+        footer{
+            top:auto;
+            bottom:0px;
+        }
+
+    </style>
+    <script type="text/babel">
+
+        function getParameterByName(name, url) {
+            if (!url) {
+                url = window.location.href;
+            }
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        var getHttpRequest = function (url,callback) {
+
+
+            var request = new XMLHttpRequest();
+            request.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    // Typical action to be performed when the document is ready:
+
+                    callback(request.responseText); // Another callback here
+
+                }
+            };
+
+            request.open("GET",   window.location.origin +url, true);
+            request.send();
+        }
+
+
+        var UserAccess =React.createClass({
+
+            getInitialState: function () {
+
+                //var revenueAccomplish = this.props.revenueAccomplish;
+
+                return {allUsers:this.props.allUsers};
+            },
+            
+            render: function () {
+                return(
+                        <div style={{textAlign:"center",margin:'auto' , width: '100%'}}>
+
+                            <div className="table-cell">First name</div>
+                            <div className="table-cell">Last name</div>
+                            <div className="table-cell">User name</div>
+                            <div className="table-cell">Email</div>
+                            <div className="table-cell" style={{borderRight:'none'}}>Role type</div>
+                            <div className="table-cell" style={{borderLeft:'none'}}></div>
+                            {
+                                this.state.allUsers.map(function (rowDict) {
+                                return <User rowDict={rowDict} />
+                            })
+
+                            }
+                        </div>
+                )
+            }
+
+        });
+        var User =React.createClass({
+
+            getInitialState: function () {
+                return {rowDict:this.props.rowDict}
+            },
+            changeRoleTypeViewer: function (event) {
+                    var confirmbox = confirm("Are you sure you want to make the changes");
+                    if(confirmbox == true){
+                        getHttpRequest("/updateUserRoleType?userName="+this.state.rowDict.userName+"&roleType=2",updateUserRoleTypeViewerResult);
+                            this.setState({rowDict: {
+                                firstName: this.state.rowDict.firstName,
+                                lastName: this.state.rowDict.lastName,
+                                email: this.state.rowDict.email,
+                                userName: this.state.rowDict.userName,
+                                access: this.state.rowDict.access,
+                                roleType: 2
+                            }
+                        });
+                    }else{
+                        document.getElementById("E_"+this.state.rowDict.userName).checked = true;
+                    }
+                        
+                
+                function updateUserRoleTypeViewerResult(data) {
+                    console.log(data);
+                    ReactDOM.render(
+
+                     <div>{data}</div>,
+                    document.getElementById('message')
+
+                    );
+                }
+            },
+
+            changeRoleTypeEditor: function (event) {
+                var confirmbox = confirm("Are you sure you want to make the changes");
+                   if(confirmbox == true){
+                        getHttpRequest("/updateUserRoleType?userName="+this.state.rowDict.userName+"&roleType=1",updateUserRoleTypeEditorResult);
+                        this.setState({rowDict: {
+                            firstName: this.state.rowDict.firstName,
+                            lastName: this.state.rowDict.lastName,
+                            email: this.state.rowDict.email,
+                            userName: this.state.rowDict.userName,
+                            access: this.state.rowDict.access,
+                            roleType: 1
+                        }});
+                    }else{
+                        document.getElementById("V_"+this.state.rowDict.userName).checked = true;                        
+                    }
+
+                function updateUserRoleTypeEditorResult(data) {
+                    console.log(data);   
+                    ReactDOM.render(
+
+                     <div>{data}</div>,
+                    document.getElementById('message')
+
+                    );                                 
+                }
+            },
+
+
+            render: function () {
+
+                return(
+                        <div className="table-row" >
+                            <div className="table-cell">{this.state.rowDict.firstName}</div>
+                            <div className="table-cell">{this.state.rowDict.lastName}</div>
+                            <div className="table-cell">{this.state.rowDict.userName}</div>
+                            <div className="table-cell">{this.state.rowDict.email}</div>
+                            <div className="table-cell">
+
+                                <input  type="radio" id = {"V_"+this.state.rowDict.userName} name={this.state.rowDict.userName} value="2" checked = {this.state.rowDict.roleType==2?true:false} onChange={this.changeRoleTypeViewer}  />
+                                <label style={{marginLeft:'5px',marginTop:'4px'}}>Sales
+                                </label>
+                            </div>
+                                <div className="table-cell">
+                                <input   type="radio" name ={this.state.rowDict.userName} id = {"E_"+this.state.rowDict.userName} value="1" checked = {this.state.rowDict.roleType==1?true:false} onChange={this.changeRoleTypeEditor}   />
+                                <label style={{marginLeft:'5px',marginTop:'4px'}}>Admin
+                                </label>
+                                </div>
+
+
+
+                        </div>
+                )
+            }
+        })
+
+
+        getHttpRequest("/userAccessTable",userAccessTableResult);
+
+        function userAccessTableResult(data) {
+            var allUsers =JSON.parse(data);
+            ReactDOM.render(
+
+                    <UserAccess allUsers = {allUsers} />,
+                document.getElementById('root')
+
+            );
+        }
+
+
+    </script>
+
+    <style type="text/css">
+        .flex-container{
+            display: -webkit-flex;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header, footer{
+                width: 100%;
+    text-align: center;
+        }
+    </style>
+</head>
+<body>
+ <div id="message" style="text-align: center"></div>   
+<div id="header"></div>
+    <script type="text/babel" src="/js/Header.jsx"></script>    
+    <script type="text/babel" >
+         ReactDOM.render(
+        <Header />,
+        document.getElementById("header")
+        );
+    </script>   
+<div class="blogging">
+
+<div class="flex-container">
+
+    <header>
+        <h1>User Access Level</h1>
+    </header>
+
+<div id ="root" style="text-align: center;margin: auto 0; display: table-cell;"></div>
+
+    <footer>Copyright &copy;Ericsson.com</footer>
+
+</div>
+
+<script>
+    var postHttpRequest = function (url,postData,callback) {
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // Typical action to be performed when the document is ready:
+                callback(request.responseText); // Another callback here
+            }
+        };
+        request.open("POST",   window.location.origin +url, true);
+        request.setRequestHeader("Content-Type", "application/json");
+        request.send(JSON.stringify(postData));
+    }
+</script>
+
+</body>
+</html>

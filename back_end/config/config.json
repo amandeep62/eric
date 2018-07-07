@@ -1,0 +1,33 @@
+{
+  "environment" : "dev",
+  "jira" : {
+    "baseUrl" : "https://jira.ericssonudn.net/rest/api/2",
+    "host" : "jira.ericssonudn.net",
+    "username": "rdaggolu",
+    "password": "ramesh1976"
+  },
+  "db_dev": {
+    "host" : "172.31.43.64",
+    "user" : "udn",
+    "password" : "udndev",
+    "database": "udn_dashboard",
+    "debug": false
+
+  },
+  "db_prod": {
+    "host" : "172.31.46.16",
+    "user" : "udn",
+    "password" : "tSS4yz7KH4",
+    "database": "UDN_DASHBOARD",
+    "debug": false
+  },
+
+  "db_local": {
+    "host" : "52.37.53.57",
+    "user" : "udnjira",
+    "password" : "udn1217",
+    "database": "udn_dashboard",
+    "debug": false
+
+  }
+}

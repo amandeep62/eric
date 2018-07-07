@@ -1,0 +1,125 @@
+/* === Navigation bar === */
+
+/* Screen resolution pre-process */
+@media (min-width: 768px) {
+    .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav > .active > a:hover {
+        background: none !important;
+    }
+}
+
+/*
+Resolution for iPad and smaller
+ */
+@media (max-width: 768px) {
+    ul.navbar-right li .dropdown:hover .btn-group .dropdown-menu {
+        display: none;
+    }
+
+    ul.navbar-right li .dropdown .btn-group.open .dropdown-menu {
+        display: block;
+    }
+
+    .search-form .form-group, .search-form .form-group:hover {
+        width: 100%;
+        border-radius: 4px 25px 25px 4px;
+    }
+
+    .search-form .form-group input.form-control {
+        left: 0px;
+    }
+
+    #search-container {
+        margin-right: 15px;
+    }
+
+
+
+    /* Display navbar in mobile */
+    .lower-nav, .inMobile {
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    .inMobile {
+        flex-direction: row-reverse;
+    }
+
+    .inMobile > li:first-child {
+        order: 2;
+    }
+
+    .inMobile > li:first-child > .dropdown > .btn-group {
+        display: block;
+    }
+
+    #hamburger-button {
+        float: right;
+    }
+
+    #settings-list > .btn-group.open {
+        background: #000;
+    }
+
+    #leftScrollArrow, #rightScrollArrow {
+        display: inline-block;
+    }
+}
+
+
+/* Default navbar style */
+
+
+.nav-top {
+    background-color: #2A343F;
+}
+
+.navbar-brand > img {
+    height: 30px;
+}
+
+#udn-navbar-collapse ul.nav {
+    padding-left: 15px;
+}
+
+/* For hamburger style in  mobile display */
+#udn-navbar-collapse ul.nav > li {
+    cursor: pointer;
+}
+
+#udn-navbar-collapse ul.nav > li > a {
+    padding: 15px;
+    border-radius: 0px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+
+
+
+ul.navbar-right li .dropdown .dropdown-menu {
+    margin: 0;
+}
+
+ul.navbar-right li .dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+#hamburger-button {
+    font-size: 27px;
+}
+
+
+/**
+Search form
+ */
+#udn-navbar-collapse > .lower-nav > div > .navbar-form {
+    padding: 10px 15px;
+}
+
+#udn-navbar-collapse > .lower-nav > div > .navbar-form > .btn {
+    font-size: 1.5em;
+    margin-left: 2px;
+}

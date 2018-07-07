@@ -1,0 +1,224 @@
+.kpiView {
+  padding-top: 5px;
+  padding-bottom: 45px;
+  overflow: hidden;
+  background-image: radial-gradient(circle, rgba(123, 6, 99, 0), rgba(123, 6, 99, .2)), linear-gradient(rgba(0, 169, 212, .5), rgba(0, 169, 212, .25));
+  background-color: #000000;
+  height: calc(100vh - 67px);
+}
+
+.kpiView .blueLine {
+  display: flex;
+}
+
+.kpiView .blueLine h1 {
+  background: -moz-linear-gradient(left, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.25) 1%, rgba(255, 255, 255, 0) 100%);
+  background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.25) 1%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(to right, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.25) 1%, rgba(255, 255, 255, 0) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#40ffffff', endColorstr='#00ffffff', GradientType=1);
+  border: none;
+  height: 5px;
+}
+
+.kpiView .blueLine span {
+  background: none;
+  color: #fff;
+  white-space: nowrap;
+  position: relative;
+  top: 3px;
+  padding: 0;
+  margin-right: 5px;
+  line-height: normal;
+}
+
+.kpiView .devFilters {
+  display: flex;
+}
+
+.kpiView .devFilters .KpiEditor {
+  margin: 0 5px 0 0;
+}
+
+.view-section{
+  clear: both;
+}
+
+.KpiEditor {
+  position: relative;
+  background: #007994;
+  color: #fff;
+  font-family: "Montserratregular";
+  margin-top: 10px;
+}
+
+.kpiView .KpiEditor.rw-multiselect {
+  padding: 2px 5px;
+}
+
+.kpiView .KpiEditor {
+  margin: 20px 5px 25px 0;
+  padding: 5px 12px;
+  height: auto;
+  color: #fff;
+  outline: none;
+}
+
+.kpiView .KpiEditor:hover {
+  background: #026278;
+  border-color: #7aa1a5;
+}
+
+.KpiEditor.activeTab {
+  background: #8ab762;
+  border-color: #b8d4a0;
+}
+
+.KpiEditor.activeTab:hover {
+  background: #7fa55d;
+  border-color: #b8d4a0;
+}
+
+
+.kpiView .releaseHomeSelection {
+  top: 25px;
+  margin-right: 25px;
+}
+
+ul#KPItabsUI.filterCustomer {
+  margin: 20px 15px;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: #007994;
+  border-radius: 5px;
+}
+
+ul#KPItabsUI.filterCustomer [type="checkbox"]:not(:checked) + label,
+ul#KPItabsUI.filterCustomer [type="checkbox"]:checked + label {
+  /*background: #8ab762;*/
+  border-color: #fff;
+  margin: 0 7px 0 0;
+  color: #fff;
+  border-radius: 3px;
+  text-shadow: 1px 1px 1px #000;
+}
+
+ul#KPItabsUI.filterCustomer li:last-child [type="checkbox"]:not(:checked) + label,
+ul#KPItabsUI.filterCustomer li:last-child [type="checkbox"]:checked + label {
+  margin-right: 0;
+}
+
+ul#KPItabsUI.filterCustomer [type="checkbox"]:checked + label:after {
+  left: .35rem;
+  content: "\e013";
+  font-family: 'Glyphicons Halflings';
+}
+
+ul#KPItabsUI.filterCustomer li p {
+  margin: 0;
+}
+
+ul#KPItabsUI.filterCustomer li {
+  display: inline-block;
+}
+
+/* checkbox aspect */
+.signed-cp [type="checkbox"]:not(:checked) + label:before,
+.signed-cp [type="checkbox"]:checked + label:before,
+.filterCustomer [type="checkbox"]:not(:checked) + label:before,
+.filterCustomer [type="checkbox"]:checked + label:before {
+  content: '';
+  position: absolute;
+  left: .2rem;
+  top: .2rem;
+  width: 1.45em;
+  height: 1.55rem;
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, .1);
+}
+
+/* checked mark aspect */
+.signed-cp [type="checkbox"]:not(:checked) + label:after,
+.signed-cp [type="checkbox"]:checked + label:after,
+.filterCustomer [type="checkbox"]:not(:checked) + label:after,
+.filterCustomer [type="checkbox"]:checked + label:after {
+  content: '■';
+  position: absolute;
+  top: .30rem;
+  left: .55rem;
+  font-weight: normal;
+  font-size: 1.3em;
+  line-height: 0.8;
+  color: #fff;
+  transition: all .2s;
+  -webkit-transition: all .2s;
+  -moz-transition: all .2s;
+  -ms-transition: all .2s;
+  -o-transition: all .2s;
+}
+
+/* Base for label styling */
+.signed-cp [type="checkbox"]:not(:checked),
+.signed-cp [type="checkbox"]:checked,
+.filterCustomer [type="checkbox"]:not(:checked),
+.filterCustomer [type="checkbox"]:checked {
+  position: absolute;
+  left: -9999px;
+}
+
+.signed-cp [type="checkbox"]:not(:checked) + label,
+.signed-cp [type="checkbox"]:checked + label,
+.filterCustomer [type="checkbox"]:not(:checked) + label,
+.filterCustomer [type="checkbox"]:checked + label {
+  position: relative;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.15);
+  padding: 3px 5px;
+  padding-left: 2.25em;
+  border: 1px solid #2a343f;
+  color: rgba(255, 255, 255, 0.76);
+  min-width: 91px;
+  display: block;
+  font-size: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.editKpiModel {
+  margin: 18px 15px 0 0;
+}
+
+#donutChart {
+  height: calc(100vh - 146px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+}
+
+.donut-chart-item,
+.kpiView #donutChart .flex-layout{
+  flex: 1 0 33%;
+  padding: 10px 0;
+}
+
+.donut-chart-item svg {
+  display: block;
+  margin: auto;
+}
+
+/* DROP DOWN */
+
+.dropdown-button {
+  position: relative;
+  background: #007994;
+  color: #fff;
+  font-family: "Montserratregular";
+  margin-top: 0px;
+  height: 31px;
+  border-radius: 4px;
+  margin-right: 7px;
+}

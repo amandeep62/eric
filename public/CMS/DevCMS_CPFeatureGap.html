@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Development KPI</title>
+    <link href="../css/font-css.css" rel="stylesheet" type="text/css">
+    <!--<link href="../css/style.css" rel="stylesheet" type="text/css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="../js/http_connection.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <script src="https://fb.me/react-15.0.0.js"></script>
+    <script src="https://fb.me/react-dom-15.0.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+    <script src="shim.js"></script>
+    <script src="jszip.js"></script>
+    <script src="xlsx.js"></script>
+    <!-- uncomment the next line here and in xlsxworker.js for ODS support -->
+    <script src="ods.js"></script>
+
+    <style>
+        body{
+                margin: 0;
+                align-content: center;
+        }
+        .rTable,h2 {
+            display: block;
+            margin: 40px 70px auto;
+
+        }
+        .rTableHeading, .rTableBody, .rTableFoot, .rTableRow{
+            clear: both;
+        }
+        .rTableHead, .rTableFoot{
+            background-color: #DDD;
+            font-weight: bold;
+        }
+        .rTableCell, .rTableHead {
+            border: 1px solid #999999;
+            float: left;
+            height: 40px;
+            overflow: hidden;
+            width: 14.285%;
+        }
+        .rTable:after {
+            visibility: hidden;
+            display: block;
+            font-size: 0;
+            content: " ";
+            clear: both;
+            height: auto;
+        }
+        .rTable{
+            text-align: center;
+        }
+
+        #drop{
+            border:2px dashed #bbb;
+            -moz-border-radius:5px;
+            -webkit-border-radius:5px;
+            border-radius:5px;
+            padding:25px;
+            text-align:center;
+            font:20pt bold,"Vollkorn";color:#bbb;
+
+        }
+
+        .donutChartType{
+            margin-top: 20px; 
+            font-family: Montserrat-Regular;
+            font-size: 20px;
+            text-align: center;
+            padding-bottom: 20px;
+        }
+
+        .nav-top {
+          background-color: #2A343F;
+        }
+        .nav-top .logo h3 {
+            color: #fff;
+            font-family: montserratregular;
+            margin: 0;
+            padding-top: 20px;
+            padding-bottom: 10px;
+            font-size: 24px;
+        }
+        .nav-top .logo h3 img {
+            vertical-align: top;
+        }
+        header {
+            background: black;
+            padding: 15px;
+        }   
+        h1{
+            font-size: 36px;
+            padding-top: 20px;
+            padding-bottom: 10px;
+            margin: 0;
+            text-align: center;
+            color: white;
+            font-family: inherit;
+        }
+    </style>
+
+</head>
+
+<body>
+<div id="header"></div>
+    <script type="text/babel" src="/js/Header.jsx"></script>    
+    <script type="text/babel" >
+         ReactDOM.render(<Header />, document.getElementById("header"));
+    </script> 
+<header><h1>Update Release 2.0 KPI</h1></header>
+<div id="flex-container">    
+
+
+
+
+
+<div id="drop" style="margin-top: 200px;">Drop an XLSX / XLSM / XLSB / ODS / XLS / XML file here</div>
+<p style="text-align: center;"><input type="file" name="xlfile" id="xlf" /> ... or click here to select a file</p>
+
+<script type="text/javascript">
+    var X = XLSX;
+    var XW = {
+        /* worker message */
+        msg: 'xlsx',
+        /* worker scripts */
+        rABS: './xlsxworker2.js',
+        norABS: './xlsxworker1.js',
+        noxfer: './xlsxworker.js'
+    };
+
+    var rABS = typeof FileReader !== "undefined" && typeof FileReader.prototype !== "undefined" && typeof FileReader.prototype.readAsBinaryString !== "undefined";
+    if(!rABS) {
+        document.getElementsByName("userabs")[0].disabled = true;
+        document.getElementsByName("userabs")[0].checked = false;
+    }
+
+    var use_worker = typeof Worker !== 'undefined';
+    if(!use_worker) {
+        document.getElementsByName("useworker")[0].disabled = true;
+        document.getElementsByName("useworker")[0].checked = false;
+    }
+
+    var transferable = use_worker;
+    if(!transferable) {
+        document.getElementsByName("xferable")[0].disabled = true;
+        document.getElementsByName("xferable")[0].checked = false;
+    }
+
+    var wtf_mode = false;
+
+    function fixdata(data) {
+        var o = "", l = 0, w = 10240;
+        for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint8Array(data.slice(l*w,l*w+w)));
+        o+=String.fromCharCode.apply(null, new Uint8Array(data.slice(l*w)));
+        return o;
+    }
+
+    function ab2str(data) {
+        var o = "", l = 0, w = 10240;
+        for(; l<data.byteLength/w; ++l) o+=String.fromCharCode.apply(null,new Uint16Array(data.slice(l*w,l*w+w)));
+        o+=String.fromCharCode.apply(null, new Uint16Array(data.slice(l*w)));
+        return o;
+    }
+
+    function s2ab(s) {
+        var b = new ArrayBuffer(s.length*2), v = new Uint16Array(b);
+        for (var i=0; i != s.length; ++i) v[i] = s.charCodeAt(i);
+        return [v, b];
+    }
+
+    function xw_noxfer(data, cb) {
+        var worker = new Worker(XW.noxfer);
+        worker.onmessage = function(e) {
+            switch(e.data.t) {
+                case 'ready': break;
+                case 'e': console.error(e.data.d); break;
+                case XW.msg: cb(JSON.parse(e.data.d)); break;
+            }
+        };
+        var arr = rABS ? data : btoa(fixdata(data));
+        worker.postMessage({d:arr,b:rABS});
+    }
+
+    function xw_xfer(data, cb) {
+        var worker = new Worker(rABS ? XW.rABS : XW.norABS);
+        worker.onmessage = function(e) {
+            switch(e.data.t) {
+                case 'ready': break;
+                case 'e': console.error(e.data.d); break;
+                default: xx=ab2str(e.data).replace(/\n/g,"\\n").replace(/\r/g,"\\r"); console.log("done"); cb(JSON.parse(xx)); break;
+            }
+        };
+        if(rABS) {
+            var val = s2ab(data);
+            worker.postMessage(val[1], [val[1]]);
+        } else {
+            worker.postMessage(data, [data]);
+        }
+    }
+
+    function xw(data, cb) {
+        transferable =true;
+        if(transferable) xw_xfer(data, cb);
+        else xw_noxfer(data, cb);
+    }
+
+    function to_csv(workbook) {
+
+        var csv ="";
+        workbook.SheetNames.forEach(function(sheetName) {
+            if(sheetName =="Data")
+            {
+                csv = X.utils.sheet_to_csv(workbook.Sheets[sheetName]);
+                if(csv.length > 0){
+
+                }
+            }
+        });
+        return csv;
+    }
+
+    function to_formulae(workbook) {
+        var result = [];
+        workbook.SheetNames.forEach(function(sheetName) {
+            var formulae = X.utils.get_formulae(workbook.Sheets[sheetName]);
+            if(formulae.length > 0){
+                result.push("SHEET: " + sheetName);
+                result.push("");
+                result.push(formulae.join("\n"));
+            }
+        });
+        return result.join("\n");
+    }
+
+
+    function process_wb(wb) {
+        var csv = "";
+
+        csv = to_csv(wb);
+
+        var rowArray = csv.split('\n');
+        var chartData = new Array;
+        var row;
+        for(var i =0; i<rowArray.length;i++){
+
+            row = rowArray[i];
+            var cell = row.split(',');
+            
+            /*if(i>1 && i <10){
+                row = rowArray[i];
+                var cells = row.split(',');
+                var goal = 100;
+                var achieved = cells[8];
+                achieved = achieved.replace("%","");
+                achieved = parseFloat(achieved);
+                var remaining = goal-achieved;
+                var dict = {title:cells[0],goal:goal,achieved:achieved,remaining:remaining,chartType:"Design"};
+                chartData.push(dict);
+            }
+
+
+            if(i>13 && i <22){
+                row = rowArray[i];
+                var cells = row.split(',');
+                var dict = {title:cells[0],goal:parseFloat(cells[1]),achieved:parseFloat(cells[2]),remaining:parseFloat(cells[1])-parseFloat(cells[2]),chartType:"Dev"};
+                chartData.push(dict);
+            }
+
+            if(i>25 && i <34){
+                row = rowArray[i];
+                var cells = row.split(',');
+                var dict = {title:cells[0],goal:parseFloat(cells[1]),achieved:parseFloat(cells[2]),remaining:parseFloat(cells[1])-parseFloat(cells[2]),chartType:"Test"};
+                chartData.push(dict);
+            }*/
+        }
+        var version_id = getParameterByName("version_id");
+        var url = "/insert_update_KPIChart_excel_cms"
+        var chartDataWithVersionID ={version_id:version_id,chartData:chartData};
+
+        postHttpRequest(url,chartDataWithVersionID,function (data) {
+            window.updateChartDataByVersion();
+        })
+
+    }
+
+    function getParameterByName(name, url) {
+        if (!url) {
+            url = window.location.href;
+        }
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+
+    function uploadExcelSheet (responseMessage) {
+
+    }
+
+
+    var drop = document.getElementById('drop');
+    function handleDrop(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        use_worker = true;
+        var files = e.dataTransfer.files;
+        var f = files[0];
+        {
+            var reader = new FileReader();
+            var name = f.name;
+            reader.onload = function(e) {
+                if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
+                var data = e.target.result;
+                if(use_worker) {
+                    xw(data, process_wb);
+                } else {
+                    var wb;
+                    if(rABS) {
+                        wb = X.read(data, {type: 'binary'});
+                    } else {
+                        var arr = fixdata(data);
+                        wb = X.read(btoa(arr), {type: 'base64'});
+                    }
+                    process_wb(wb);
+                }
+            };
+            if(rABS) reader.readAsBinaryString(f);
+            else reader.readAsArrayBuffer(f);
+        }
+    }
+
+    function handleDragover(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+    }
+
+    if(drop.addEventListener) {
+        drop.addEventListener('dragenter', handleDragover, false);
+        drop.addEventListener('dragover', handleDragover, false);
+        drop.addEventListener('drop', handleDrop, false);
+    }
+
+
+    var xlf = document.getElementById('xlf');
+    function handleFile(e) {
+        rABS = true;
+        use_worker = true;
+        var files = e.target.files;
+        var f = files[0];
+        {
+            var reader = new FileReader();
+            var name = f.name;
+            reader.onload = function(e) {
+                if(typeof console !== 'undefined') console.log("onload", new Date(), rABS, use_worker);
+                var data = e.target.result;
+                if(use_worker) {
+                    xw(data, process_wb);
+                } else {
+                    var wb;
+                    if(rABS) {
+                        wb = X.read(data, {type: 'binary'});
+                    } else {
+                        var arr = fixdata(data);
+                        wb = X.read(btoa(arr), {type: 'base64'});
+                    }
+                    process_wb(wb);
+                }
+            };
+            if(rABS) reader.readAsBinaryString(f);
+            else reader.readAsArrayBuffer(f);
+        }
+    }
+
+    if(xlf.addEventListener) xlf.addEventListener('change', handleFile, false);
+
+</script>
+</div>
+</body>
+</html>
